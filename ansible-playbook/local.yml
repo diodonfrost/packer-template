@@ -1,0 +1,10 @@
+---
+- hosts: packer-build
+
+  tasks:
+
+  # Update system
+  - name: update system
+    package:
+      name: "*"
+      state: latest
