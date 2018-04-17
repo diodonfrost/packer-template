@@ -8,3 +8,14 @@
     package:
       name: "*"
       state: latest
+    when: ansible_os_family != "Debian"
+
+  # Update Ubuntu/Debian system
+  - name: apt update system
+    apt:
+      name: "*"
+      state: latest
+      update_cache: yes
+      force_apt_get: yes
+    become: yes
+    when: ansible_os_family == "Debian"

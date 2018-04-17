@@ -12,7 +12,13 @@ provide packer template for many hypervisor and OS
 
 Make sure all the required software (listed above) is installed, then cd to the root project directory, and run:
 
+    Centos 7:
+
     $ packer build packer-json/kvm/centos-7.json
+
+    Ubuntu 16.04:
+
+    $ packer build packer-json/kvm/ubuntu-16.04.json
 
 ## License
 GNU GPL 3
