@@ -4,16 +4,6 @@ d-i time/zone string UTC
 d-i keymap select fr(latin9)
 d-i keyboard-configuration/toggle select No toggling
 
-### Network
-#d-i netcfg/get_hostname string ubuntu
-#d-i netcfg/get_domain string ubuntu
-#d-i netcfg/hostname string ubuntu
-
-### Create account
-# Root account
-#d-i passwd/root-password password secret
-#d-i passwd/root-password-again password secret
-
 # User account
 d-i passwd/user-fullname string ubuntu
 d-i passwd/username string ubuntu
