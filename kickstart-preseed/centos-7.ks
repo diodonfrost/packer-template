@@ -40,15 +40,15 @@ user --groups=wheel --name=centos --password secret --gecos="centos"
 services --enabled="chronyd"
 
 # System bootloader configuration
-bootloader --append=" crashkernel=auto" --location=mbr --boot-drive=vda
+bootloader --append=" crashkernel=auto" --location=mbr
 
 # Partition clearing information
 clearpart --none --initlabel
 
 # Disk partitioning information
-part /boot --fstype="ext4" --ondisk=vda --size=1024
-part swap --fstype="swap" --ondisk=vda --size=1024
-part / --fstype="ext4" --ondisk=vda --grow
+part /boot --fstype="ext4" --size=1024
+part swap --fstype="swap" --size=1024
+part / --fstype="ext4" --grow
 
 %packages
 @^minimal

@@ -1,0 +1,47 @@
+{
+  "builders":
+  [
+    {
+      "type": "virtualbox-iso",
+      "iso_url": "http://releases.ubuntu.com/16.04.4/ubuntu-16.04.4-server-amd64.iso",
+      "iso_checksum": "ee834fbeb94cc55972b38caafa2029c29625e2e8",
+      "iso_checksum_type": "sha1",
+      "output_directory": "output_img",
+      "shutdown_command": "sudo shutdown -P now",
+      "disk_size": 5000,
+      "format": "ova",
+      "headless": false,
+      "guest_os_type": "Ubuntu_64",
+      "http_directory": "kickstart-preseed",
+      "ssh_username": "ubuntu",
+      "ssh_password": "secret",
+      "ssh_port": 22,
+      "ssh_timeout": "900s",
+      "vm_name": "ubuntu-16.04",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "/install/vmlinuz ",
+        "initrd=/install/initrd.gz ",
+        "net.ifnames=0 ",
+        "auto-install/enable=true ",
+        "debconf/priority=critical ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-16.04.preseed ",
+        "<enter>"
+      ]
+    }
+  ],
+  "provisioners":
+  [
+    {
+      "type": "ansible",
+      "playbook_file": "ansible-playbook/local.yml",
+      "groups": ["packer-build"],
+      "extra_arguments": ["-vvvv", "--extra-vars", "ansible_python_interpreter=/usr/bin/python3"],
+      "user": "ubuntu"
+    }
+  ]
+}
