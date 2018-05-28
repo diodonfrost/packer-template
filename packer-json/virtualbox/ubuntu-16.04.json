@@ -6,7 +6,7 @@
       "iso_url": "http://releases.ubuntu.com/16.04.4/ubuntu-16.04.4-server-amd64.iso",
       "iso_checksum": "ee834fbeb94cc55972b38caafa2029c29625e2e8",
       "iso_checksum_type": "sha1",
-      "output_directory": "output_img",
+      "output_directory": "ubuntu_img",
       "shutdown_command": "sudo shutdown -P now",
       "disk_size": 5000,
       "format": "ova",
@@ -42,6 +42,20 @@
       "groups": ["packer-build"],
       "extra_arguments": ["-vvvv", "--extra-vars", "ansible_python_interpreter=/usr/bin/python3"],
       "user": "ubuntu"
+    },
+    {
+      "type": "file",
+      "source": "inspec",
+      "destination": "/tmp"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "wget https://packages.chef.io/files/stable/inspec/2.1.83/ubuntu/18.04/inspec_2.1.83-1_amd64.deb",
+        "sudo -E dpkg -i inspec_2.1.83-1_amd64.deb",
+        "inspec exec /tmp/inspec/spec",
+        "sudo -E apt remove inspec -y"
+      ]
     }
   ]
 }

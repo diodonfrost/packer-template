@@ -6,7 +6,7 @@
       "iso_url": "http://mirrors.ircam.fr/pub/CentOS/7/isos/x86_64/CentOS-7-x86_64-Minimal-1708.iso",
       "iso_checksum": "aae20c8052a55cf179af88d9dd35f1a889cd5773",
       "iso_checksum_type": "sha1",
-      "output_directory": "output_img",
+      "output_directory": "centos_img",
       "shutdown_command": "shutdown -P now",
       "disk_size": 5000,
       "format": "ova",
@@ -32,6 +32,19 @@
       "groups": ["packer-build"],
       "extra_arguments": ["-vvvv"],
       "user": "root"
+    },
+    {
+      "type": "file",
+      "source": "inspec",
+      "destination": "/tmp"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo -E yum install https://packages.chef.io/files/stable/inspec/2.1.54/el/7/inspec-2.1.54-1.el7.x86_64.rpm -y",
+        "inspec exec /tmp/inspec/spec",
+        "sudo -E yum remove inspec -y -q -e 0"
+      ]
     }
   ]
 }
