@@ -6,7 +6,7 @@
       "iso_url": "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-9.4.0-amd64-netinst.iso",
       "iso_checksum": "da34180d8f618a6a311fe31fb08508496eb91601",
       "iso_checksum_type": "sha1",
-      "output_directory": "output_img",
+      "output_directory": "debian_img",
       "shutdown_command": "sudo shutdown -P now",
       "disk_size": 5000,
       "format": "qcow2",
@@ -41,6 +41,20 @@
       "groups": ["packer-build"],
       "extra_arguments": ["-vvvv", "--extra-vars", "ansible_python_interpreter=/usr/bin/python3"],
       "user": "debian"
+    },
+    {
+      "type": "file",
+      "source": "inspec",
+      "destination": "/tmp"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "wget https://packages.chef.io/files/stable/inspec/2.1.83/ubuntu/18.04/inspec_2.1.83-1_amd64.deb",
+        "sudo -E dpkg -i inspec_2.1.83-1_amd64.deb",
+        "inspec exec /tmp/inspec/spec",
+        "sudo -E apt remove inspec -y"
+      ]
     }
   ]
 }
