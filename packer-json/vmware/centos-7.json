@@ -6,7 +6,7 @@
       "iso_url": "http://mirrors.ircam.fr/pub/CentOS/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
       "iso_checksum": "13675c6f74880e7ff3481b91bdaf925ce81bda8f",
       "iso_checksum_type": "sha1",
-      "output_directory": "centos_img",
+      "output_directory": "centos7_img",
       "format": "ova",
       "shutdown_command": "shutdown -P now",
       "disk_size": 5000,
