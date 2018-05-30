@@ -1,0 +1,62 @@
+{
+  "builders":
+  [
+    {
+      "type": "vmware-iso",
+      "iso_url": "http://mirrors.ircam.fr/pub/CentOS/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+      "iso_checksum": "13675c6f74880e7ff3481b91bdaf925ce81bda8f",
+      "iso_checksum_type": "sha1",
+      "output_directory": "centos_img",
+      "format": "ova",
+      "shutdown_command": "shutdown -P now",
+      "disk_size": 5000,
+      "disk_type_id": "thin",
+      "headless": true,
+      "guest_os_type": "centos-64",
+      "vnc_disable_password": true,
+      "http_directory": "kickstart-preseed",
+      "remote_host": "my-little-esxi.com",
+      "remote_username": "root",
+      "remote_password": "secret",
+      "remote_type": "esx5",
+      "vmx_data": {
+        "numvcpus": "2",
+        "memsize": "1024",
+        "ethernet0.present": "TRUE",
+        "ethernet0.networkName": "VM Network"
+      },
+      "ssh_username": "root",
+      "ssh_password": "secret",
+      "ssh_port": 22,
+      "ssh_timeout": "600s",
+      "vm_name": "centos-7",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<tab> text biosdevname=0 net.ifnames=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-7.ks ip=dhcp noipv6<enter><wait>"
+      ]
+    }
+  ],
+  "provisioners":
+  [
+    {
+      "type": "ansible",
+      "playbook_file": "ansible-playbook/local.yml",
+      "groups": ["packer-build"],
+      "extra_arguments": ["-vvvv"],
+      "user": "root"
+    },
+    {
+      "type": "file",
+      "source": "inspec",
+      "destination": "/tmp"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo -E yum install https://packages.chef.io/files/stable/inspec/2.1.54/el/7/inspec-2.1.54-1.el7.x86_64.rpm -y",
+        "inspec exec /tmp/inspec/spec",
+        "sudo -E yum remove inspec -y -q -e 0"
+      ]
+    }
+  ]
+}
