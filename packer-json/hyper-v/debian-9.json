@@ -1,0 +1,55 @@
+{
+  "builders":
+  [
+    {
+      "type": "hyperv-iso",
+      "iso_url": "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-9.4.0-amd64-netinst.iso",
+      "iso_checksum": "da34180d8f618a6a311fe31fb08508496eb91601",
+      "iso_checksum_type": "sha1",
+      "output_directory": "debian_img",
+      "shutdown_command": "shutdown -P now",
+      "disk_size": 5000,
+      "http_directory": "kickstart-preseed",
+      "generation": 1,
+      "enable_secure_boot": false,
+      "ssh_username": "root",
+      "ssh_password": "secret",
+      "ssh_port": 22,
+      "ssh_timeout": "600s",
+      "vm_name": "debian-9",
+      "boot_wait": "15s",
+      "boot_command": [
+        "<esc><wait><wait>",
+        "install auto <wait>",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian-9.preseed <wait>",
+        "debian-installer=en_US locale=en_AU.UTF-8 keymap=fr(latin9) <wait>",
+        "netcfg/get_hostname=debian <wait>",
+        "netcfg/get_domain=local <wait>",
+        "fb=false debconf/frontend=noninteractive <wait>",
+        "<enter><wait>"
+      ]
+    }
+  ],
+  "provisioners":
+  [
+    {
+      "type": "shell",
+      "inline": [
+        "apt update && apt upgrade -y"]
+    },
+    {
+      "type": "file",
+      "source": "inspec",
+      "destination": "/tmp"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "wget https://packages.chef.io/files/stable/inspec/2.1.83/ubuntu/18.04/inspec_2.1.83-1_amd64.deb",
+        "sudo -E dpkg -i inspec_2.1.83-1_amd64.deb",
+        "inspec exec /tmp/inspec/spec",
+        "sudo -E apt remove inspec -y"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "builders":
+  [
+    {
+      "type": "hyperv-iso",
+      "iso_url": "http://mirrors.ircam.fr/pub/CentOS/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+      "iso_checksum": "13675c6f74880e7ff3481b91bdaf925ce81bda8f",
+      "iso_checksum_type": "sha1",
+      "output_directory": "centos_img",
+      "shutdown_command": "shutdown -P now",
+      "disk_size": 5000,
+      "http_directory": "kickstart-preseed",
+      "generation": 1,
+      "enable_secure_boot": false,
+      "ssh_username": "root",
+      "ssh_password": "secret",
+      "ssh_port": 22,
+      "ssh_timeout": "600s",
+      "vm_name": "centos-7",
+      "boot_wait": "15s",
+      "boot_command": [
+        "<tab> text biosdevname=0 net.ifnames=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-7.ks ip=dhcp noipv6<enter><wait>"
+      ]
+    }
+  ],
+  "provisioners":
+  [
+    {
+      "type": "shell",
+      "inline": [
+        "yum update -y"]
+    },
+    {
+      "type": "file",
+      "source": "inspec",
+      "destination": "/tmp"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo -E yum install https://packages.chef.io/files/stable/inspec/2.1.54/el/7/inspec-2.1.54-1.el7.x86_64.rpm -y",
+        "inspec exec /tmp/inspec/spec",
+        "sudo -E yum remove inspec -y -q -e 0"
+      ]
+    }
+  ]
+}
